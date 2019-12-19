@@ -1,6 +1,6 @@
 import { getShapeOrientation } from "./Shapes/Shape";
 
-export default class PixelMap {
+export default class Grid {
   constructor(rows, cols) {
     this.map = getEmptyMap(rows, cols);
     this.rows = rows;
@@ -8,11 +8,11 @@ export default class PixelMap {
   }
 
   clone() {
-    const pixelMap = new PixelMap(this.rows, this.cols);
+    const grid = new Grid(this.rows, this.cols);
 
-    pixelMap.map = this.map.map(row => [...row]);
+    grid.map = this.map.map(row => [...row]);
 
-    return pixelMap;
+    return grid;
   }
 }
 
@@ -20,7 +20,7 @@ const getEmptyMap = (rows, cols) => {
   return new Array(rows).fill(new Array(cols).fill(false));
 };
 
-export const hasCollision = (shape, pixelMap) => {
+export const hasCollision = (shape, grid) => {
   const orientation = getShapeOrientation(shape);
 
   let isCollided = false;
@@ -37,21 +37,21 @@ export const hasCollision = (shape, pixelMap) => {
         }
 
         // check if hitting the bottom wall
-        if (actualY >= pixelMap.rows) {
+        if (actualY >= grid.rows) {
           isCollided = true;
 
           return;
         }
 
         // check if hitting the left and right walls
-        if (actualX < 0 || actualX >= pixelMap.cols) {
+        if (actualX < 0 || actualX >= grid.cols) {
           isCollided = true;
 
           return;
         }
 
         // check if hitting an unclear pixel
-        if (pixelMap.map[actualY][actualX] === true) {
+        if (grid.map[actualY][actualX] === true) {
           isCollided = true;
         }
       }
@@ -61,8 +61,8 @@ export const hasCollision = (shape, pixelMap) => {
   return isCollided;
 };
 
-export const addShapeToPixelMap = (shape, pixelMap) => {
-  const newPixelMap = pixelMap.clone();
+export const addShapeToGrid = (shape, grid) => {
+  const newGrid = grid.clone();
   const orientation = getShapeOrientation(shape);
 
   orientation.forEach((row, i) => {
@@ -73,32 +73,32 @@ export const addShapeToPixelMap = (shape, pixelMap) => {
 
         if (
           actualX >= 0 &&
-          actualX < newPixelMap.cols &&
+          actualX < newGrid.cols &&
           actualY >= 0 &&
-          actualY < newPixelMap.rows
+          actualY < newGrid.rows
         ) {
-          newPixelMap.map[actualY][actualX] = true;
+          newGrid.map[actualY][actualX] = true;
         }
       }
     });
   });
 
-  return newPixelMap;
+  return newGrid;
 };
 
-export const clearFullRows = pixelMap => {
-  const newPixelMap = pixelMap.clone();
+export const clearFullRows = grid => {
+  const newGrid = grid.clone();
 
   // filter full rows
-  newPixelMap.map = newPixelMap.map.filter(
+  newGrid.map = newGrid.map.filter(
     row => !row.reduce((acc, value) => (acc &= value), true)
   );
 
   // append empty rows back
-  newPixelMap.map = [
-    ...getEmptyMap(newPixelMap.rows - newPixelMap.map.length, newPixelMap.cols),
-    ...newPixelMap.map
+  newGrid.map = [
+    ...getEmptyMap(newGrid.rows - newGrid.map.length, newGrid.cols),
+    ...newGrid.map
   ];
 
-  return newPixelMap;
+  return newGrid;
 };

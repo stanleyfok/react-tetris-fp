@@ -1,9 +1,5 @@
-import { getRandomShape } from "./Shapes/ShapeFactory";
-import PixelMap, {
-  hasCollision,
-  addShapeToPixelMap,
-  clearFullRows
-} from "./PixelMap";
+import { getRandomShape, cloneShape } from "./Shapes/ShapeFactory";
+import Grid, { hasCollision, addShapeToGrid, clearFullRows } from "./Grid";
 import { getShapeOrientation } from "./Shapes/Shape";
 
 export const ACTION = {
@@ -16,15 +12,15 @@ export const ACTION = {
 export default class GameState {
   constructor(rows, cols) {
     this.currentShape = null;
-    this.unclearedPixelMap = new PixelMap(rows, cols);
+    this.unclearedGrid = new Grid(rows, cols);
     this.isGameOver = false;
   }
 
   clone() {
     const gameState = new GameState();
 
-    gameState.currentShape = this.currentShape.clone();
-    gameState.unclearedPixelMap = this.unclearedPixelMap.clone();
+    gameState.currentShape = cloneShape(this.currentShape);
+    gameState.unclearedGrid = this.unclearedGrid.clone();
     gameState.isGameOver = this.isGameOver;
 
     return gameState;
@@ -35,7 +31,7 @@ export default class GameState {
 export const getInitGameState = (rows, cols) => {
   const gameState = new GameState(rows, cols);
 
-  gameState.currentShape = getNextShape(gameState.unclearedPixelMap);
+  gameState.currentShape = getNextShape(gameState.unclearedGrid);
 
   return gameState;
 };
@@ -43,21 +39,21 @@ export const getInitGameState = (rows, cols) => {
 // impure function
 // since generating next shape is by random, it is not predictive
 // but we can make the calculation of position be pure function
-const getNextShape = pixelMap => {
+const getNextShape = Grid => {
   const shape = getRandomShape();
 
   shape.rotation = Math.floor(Math.random() * shape.orientations.length);
 
   // position is obtained via a pure function, testable
-  shape.position = getShapeInitialPosition(shape, pixelMap);
+  shape.position = getShapeInitialPosition(shape, Grid);
 
   return shape;
 };
 
 // pure function
-const getShapeInitialPosition = (shape, pixelMap) => {
+const getShapeInitialPosition = (shape, Grid) => {
   return [
-    Math.floor((pixelMap.cols - shape.size) / 2), // middle of tower
+    Math.floor((Grid.cols - shape.size) / 2), // middle of tower
     -shape.size // top of tower
   ];
 };
@@ -87,41 +83,29 @@ export const getNextGameState = (action, gameState) => {
 
   const isCollided = hasCollision(
     nextGameState.currentShape,
-    nextGameState.unclearedPixelMap
+    nextGameState.unclearedGrid
   );
 
   if (isCollided) {
     if (action === ACTION.MOVE_DOWN) {
-      nextGameState.unclearedPixelMap = addShapeToPixelMap(
+      nextGameState.unclearedGrid = addShapeToGrid(
         gameState.currentShape, // use old state's shape position
-        nextGameState.unclearedPixelMap
+        nextGameState.unclearedGrid
       );
 
       // clear full rows
-      nextGameState.unclearedPixelMap = clearFullRows(
-        nextGameState.unclearedPixelMap
-      );
-
-      // nextGameState.pixelMap = nextGameState.unclearedPixelMap;
+      nextGameState.unclearedGrid = clearFullRows(nextGameState.unclearedGrid);
 
       // check if game over
       if (nextGameState.currentShape.position[1] < 0) {
         nextGameState.isGameOver = true;
       } else {
-        nextGameState.currentShape = getNextShape(
-          nextGameState.unclearedPixelMap
-        );
+        nextGameState.currentShape = getNextShape(nextGameState.unclearedGrid);
       }
     } else {
       // just cannot move the shape, so game state keeps unchanged
       return gameState;
     }
-  } else {
-    // use new position
-    // nextGameState.pixelMap = addShapeToPixelMap(
-    //   nextGameState.currentShape,
-    //   nextGameState.unclearedPixelMap
-    // );
   }
 
   return nextGameState;

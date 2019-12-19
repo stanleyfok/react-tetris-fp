@@ -5,7 +5,7 @@ import Pixel from "../Pixel/Pixel";
 import "./Grid.css";
 
 function Grid(props) {
-  const { map } = props.pixelMap;
+  const { map } = props.grid;
 
   const gridContent = map.map((row, i) => {
     const rowContent = row.map((col, j) => {
@@ -19,7 +19,7 @@ function Grid(props) {
 }
 
 Grid.propTypes = {
-  pixelMap: PropTypes.object.isRequired
+  grid: PropTypes.object.isRequired
 };
 
 export default Grid;

@@ -12,16 +12,6 @@ export default class Shape {
     this.position = [0, 0];
     this.rotation = 0;
   }
-
-  clone = () => {
-    const shape = new Shape();
-    shape.size = this.size;
-    shape.orientations = [...this.orientations];
-    shape.position = [...this.position];
-    shape.rotation = this.rotation;
-
-    return shape;
-  };
 }
 
 export const getShapeOrientation = shape => {

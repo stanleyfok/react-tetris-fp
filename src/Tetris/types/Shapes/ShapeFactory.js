@@ -16,7 +16,7 @@ const SHAPE_TYPES = {
   FLIP_L: 6
 };
 
-const getShape = shape => {
+export const getShape = shape => {
   switch (shape) {
     case SHAPE_TYPES.SQUARE:
       return new SquareShape();
@@ -35,6 +35,43 @@ const getShape = shape => {
     default:
       return new BarShape();
   }
+};
+
+export const cloneShape = shape => {
+  const shapeClass = shape.constructor.name;
+  let newShape;
+
+  switch (shapeClass) {
+    case "SquareShape":
+      newShape = new SquareShape();
+      break;
+    case "TShape":
+      newShape = new TShape();
+      break;
+    case "SShape":
+      newShape = new SShape();
+      break;
+    case "ZShape":
+      newShape = new ZShape();
+      break;
+    case "BarShape":
+      newShape = new BarShape();
+      break;
+    case "LShape":
+      newShape = new LShape();
+      break;
+    case "FlipLShape":
+      newShape = new FlipLShape();
+      break;
+    default:
+      newShape = new BarShape();
+      break;
+  }
+
+  newShape.position = [...shape.position];
+  newShape.rotation = shape.rotation;
+
+  return newShape;
 };
 
 export const getRandomShape = () => {

@@ -1,7 +1,7 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Grid from "./components/Grid/Grid";
-import { addShapeToPixelMap } from "./types/PixelMap";
+import { addShapeToGrid } from "./types/Grid";
 
 import { ACTION, getNextGameState, getInitGameState } from "./types/GameState";
 
@@ -49,9 +49,9 @@ class Tetris extends React.Component {
     this.gameState = getInitGameState(rows, cols);
 
     this.setState({
-      pixelMap: addShapeToPixelMap(
+      grid: addShapeToGrid(
         this.gameState.currentShape,
-        this.gameState.unclearedPixelMap
+        this.gameState.unclearedGrid
       )
     });
 
@@ -81,9 +81,9 @@ class Tetris extends React.Component {
     this.gameState = getNextGameState(ACTION.MOVE_DOWN, this.gameState);
 
     this.setState({
-      pixelMap: addShapeToPixelMap(
+      grid: addShapeToGrid(
         this.gameState.currentShape,
-        this.gameState.unclearedPixelMap
+        this.gameState.unclearedGrid
       )
     });
   };
@@ -93,9 +93,9 @@ class Tetris extends React.Component {
     this.gameState = getNextGameState(ACTION.MOVE_LEFT, this.gameState);
 
     this.setState({
-      pixelMap: addShapeToPixelMap(
+      grid: addShapeToGrid(
         this.gameState.currentShape,
-        this.gameState.unclearedPixelMap
+        this.gameState.unclearedGrid
       )
     });
   };
@@ -105,9 +105,9 @@ class Tetris extends React.Component {
     this.gameState = getNextGameState(ACTION.MOVE_RIGHT, this.gameState);
 
     this.setState({
-      pixelMap: addShapeToPixelMap(
+      grid: addShapeToGrid(
         this.gameState.currentShape,
-        this.gameState.unclearedPixelMap
+        this.gameState.unclearedGrid
       )
     });
   };
@@ -117,17 +117,17 @@ class Tetris extends React.Component {
     this.gameState = getNextGameState(ACTION.ROTATE, this.gameState);
 
     this.setState({
-      pixelMap: addShapeToPixelMap(
+      grid: addShapeToGrid(
         this.gameState.currentShape,
-        this.gameState.unclearedPixelMap
+        this.gameState.unclearedGrid
       )
     });
   };
 
   render() {
-    const { pixelMap } = this.state;
+    const { grid } = this.state;
 
-    return <div>{pixelMap && <Grid pixelMap={pixelMap} />}</div>;
+    return <div>{grid && <Grid grid={grid} />}</div>;
   }
 }
 
