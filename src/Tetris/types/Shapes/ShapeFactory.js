@@ -16,6 +16,7 @@ const SHAPE_TYPES = {
   FLIP_L: 6
 };
 
+// pure function 🌟
 export const getShape = shape => {
   switch (shape) {
     case SHAPE_TYPES.SQUARE:
@@ -37,6 +38,7 @@ export const getShape = shape => {
   }
 };
 
+// pure function 🌟
 export const cloneShape = shape => {
   const shapeClass = shape.constructor.name;
   let newShape;
@@ -74,6 +76,7 @@ export const cloneShape = shape => {
   return newShape;
 };
 
+// impure function due to randomness
 export const getRandomShape = () => {
   const totalShapes = Object.keys(SHAPE_TYPES).length;
   const shape = Math.floor(Math.random() * totalShapes);

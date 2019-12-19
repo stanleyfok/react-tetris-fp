@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 
 import "./Pixel.css";
 
+// pure component 🌟
 function Pixel(props) {
   const { isFilled } = props;
 

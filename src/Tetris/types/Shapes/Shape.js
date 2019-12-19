@@ -14,6 +14,7 @@ export default class Shape {
   }
 }
 
+// pure function 🌟
 export const getShapeOrientation = shape => {
   return shape.orientations[shape.rotation];
 };

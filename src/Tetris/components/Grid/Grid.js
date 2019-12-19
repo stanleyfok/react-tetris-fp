@@ -4,6 +4,7 @@ import Pixel from "../Pixel/Pixel";
 
 import "./Grid.css";
 
+// pure component 🌟
 function Grid(props) {
   const { map } = props.grid;
 

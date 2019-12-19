@@ -8,6 +8,7 @@ export default class Grid {
   }
 }
 
+// pure function 🌟
 export const cloneGrid = grid => {
   const newGrid = new Grid(grid.rows, grid.cols);
 
@@ -20,6 +21,7 @@ const getEmptyMap = (rows, cols) => {
   return new Array(rows).fill(new Array(cols).fill(false));
 };
 
+// pure function 🌟
 export const hasCollision = (shape, grid) => {
   const orientation = getShapeOrientation(shape);
 
@@ -61,6 +63,7 @@ export const hasCollision = (shape, grid) => {
   return isCollided;
 };
 
+// pure function 🌟
 export const addShapeToGrid = (shape, grid) => {
   const newGrid = cloneGrid(grid);
   const orientation = getShapeOrientation(shape);
@@ -86,6 +89,7 @@ export const addShapeToGrid = (shape, grid) => {
   return newGrid;
 };
 
+// pure function 🌟
 export const clearFullRows = grid => {
   const newGrid = cloneGrid(grid);
 

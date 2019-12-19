@@ -22,6 +22,7 @@ export default class GameState {
   }
 }
 
+// pure function 🌟
 export const cloneGameState = gameState => {
   const newGameState = new GameState();
 
@@ -32,7 +33,7 @@ export const cloneGameState = gameState => {
   return newGameState;
 };
 
-// impure function
+// impure function due to randomness
 export const getInitGameState = (rows, cols) => {
   const gameState = new GameState(rows, cols);
 
@@ -41,15 +42,12 @@ export const getInitGameState = (rows, cols) => {
   return gameState;
 };
 
-// impure function
+// impure function due to randomness
 // since generating next shape is by random, it is not predictive
-// but we can make the calculation of position be pure function
 const getNextShape = Grid => {
   const shape = getRandomShape();
 
   shape.rotation = Math.floor(Math.random() * shape.orientations.length);
-
-  // position is obtained via a pure function, testable
   shape.position = getShapeInitialPosition(shape, Grid);
 
   return shape;
@@ -63,7 +61,7 @@ const getShapeInitialPosition = (shape, Grid) => {
   ];
 };
 
-// pure function
+// pure function 🌟
 export const getNextGameState = (action, gameState) => {
   const nextGameState = cloneGameState(gameState);
 
@@ -114,25 +112,4 @@ export const getNextGameState = (action, gameState) => {
   }
 
   return nextGameState;
-};
-
-export const checkGameOver = shape => {
-  const orientation = getShapeOrientation(shape);
-
-  let isGameOver = false;
-
-  orientation.forEach((row, i) => {
-    row.forEach((col, j) => {
-      if (orientation[i][j] === 1) {
-        const actualY = shape.position[1] + i;
-
-        // ignore if still above the top
-        if (actualY < 0) {
-          isGameOver = true;
-        }
-      }
-    });
-  });
-
-  return isGameOver;
 };
