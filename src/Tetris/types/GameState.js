@@ -1,5 +1,10 @@
 import { getRandomShape, cloneShape } from "./Shapes/ShapeFactory";
-import Grid, { hasCollision, addShapeToGrid, clearFullRows } from "./Grid";
+import Grid, {
+  cloneGrid,
+  hasCollision,
+  addShapeToGrid,
+  clearFullRows
+} from "./Grid";
 import { getShapeOrientation } from "./Shapes/Shape";
 
 export const ACTION = {
@@ -15,17 +20,17 @@ export default class GameState {
     this.unclearedGrid = new Grid(rows, cols);
     this.isGameOver = false;
   }
-
-  clone() {
-    const gameState = new GameState();
-
-    gameState.currentShape = cloneShape(this.currentShape);
-    gameState.unclearedGrid = this.unclearedGrid.clone();
-    gameState.isGameOver = this.isGameOver;
-
-    return gameState;
-  }
 }
+
+export const cloneGameState = gameState => {
+  const newGameState = new GameState();
+
+  newGameState.currentShape = cloneShape(gameState.currentShape);
+  newGameState.unclearedGrid = cloneGrid(gameState.unclearedGrid);
+  newGameState.isGameOver = gameState.isGameOver;
+
+  return newGameState;
+};
 
 // impure function
 export const getInitGameState = (rows, cols) => {
@@ -60,7 +65,7 @@ const getShapeInitialPosition = (shape, Grid) => {
 
 // pure function
 export const getNextGameState = (action, gameState) => {
-  const nextGameState = gameState.clone();
+  const nextGameState = cloneGameState(gameState);
 
   switch (action) {
     case ACTION.MOVE_DOWN:

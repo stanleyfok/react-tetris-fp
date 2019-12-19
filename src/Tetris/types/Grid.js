@@ -6,15 +6,15 @@ export default class Grid {
     this.rows = rows;
     this.cols = cols;
   }
-
-  clone() {
-    const grid = new Grid(this.rows, this.cols);
-
-    grid.map = this.map.map(row => [...row]);
-
-    return grid;
-  }
 }
+
+export const cloneGrid = grid => {
+  const newGrid = new Grid(grid.rows, grid.cols);
+
+  newGrid.map = grid.map.map(row => [...row]);
+
+  return newGrid;
+};
 
 const getEmptyMap = (rows, cols) => {
   return new Array(rows).fill(new Array(cols).fill(false));
@@ -62,7 +62,7 @@ export const hasCollision = (shape, grid) => {
 };
 
 export const addShapeToGrid = (shape, grid) => {
-  const newGrid = grid.clone();
+  const newGrid = cloneGrid(grid);
   const orientation = getShapeOrientation(shape);
 
   orientation.forEach((row, i) => {
@@ -87,7 +87,7 @@ export const addShapeToGrid = (shape, grid) => {
 };
 
 export const clearFullRows = grid => {
-  const newGrid = grid.clone();
+  const newGrid = cloneGrid(grid);
 
   // filter full rows
   newGrid.map = newGrid.map.filter(
