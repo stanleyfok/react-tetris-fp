@@ -6,7 +6,10 @@ import "./App.css";
 function App() {
   return (
     <div className="app">
-      <Tetris rows={20} cols={10} normalInterval={400} speedUpSpeed={8} />
+      <p>
+        Tetris using <strong>Functional Programming</strong> approach
+      </p>
+      <Tetris rows={20} cols={10} normalInterval={400} />
       <audio src={tetrisBg} type="audio/mpeg" autoPlay={true} loop={true} />
     </div>
   );

@@ -44,25 +44,22 @@ class Tetris extends React.Component {
   };
 
   startNewGame = () => {
-    const { rows, cols, normalInterval } = this.props;
+    const { rows, cols, tickInterval } = this.props;
 
     this.gameState = createGameState(rows, cols);
     this.setState(this.gameState);
 
-    this.timer = setTimeout(this.doGameTick, normalInterval);
+    this.timer = setTimeout(this.doGameTick, tickInterval);
   };
 
   doGameTick = () => {
     if (!this.gameState.isGameOver) {
-      const { normalInterval, speedUpSpeed } = this.props;
+      const { tickInterval } = this.props;
 
       this.moveShapeDown();
 
       // do next tick
-      this.timer = setTimeout(
-        this.doGameTick,
-        normalInterval / (this.gameState.isSpeedUp ? speedUpSpeed : 1)
-      );
+      this.timer = setTimeout(this.doGameTick, tickInterval);
     } else {
       alert("Game Over!");
 
@@ -108,15 +105,13 @@ class Tetris extends React.Component {
 Tetris.propTypes = {
   rows: PropTypes.number.isRequired,
   cols: PropTypes.number.isRequired,
-  normalInterval: PropTypes.number.isRequired,
-  speedUpSpeed: PropTypes.number.isRequired
+  tickInterval: PropTypes.number.isRequired
 };
 
 Tetris.defaultProps = {
   rows: 20,
   cols: 10,
-  normalInterval: 400,
-  speedUpSpeed: 5
+  tickInterval: 400
 };
 
 export default Tetris;
