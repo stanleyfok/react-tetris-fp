@@ -8,7 +8,7 @@ const SHAPE_TYPES = {
   FLIP_L: 6
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const createBarShape = () => {
   return {
     size: 4,
@@ -31,7 +31,7 @@ export const createBarShape = () => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const createFlipLShape = () => {
   return {
     size: 3,
@@ -62,7 +62,7 @@ export const createFlipLShape = () => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const createLShape = () => {
   return {
     size: 3,
@@ -93,7 +93,7 @@ export const createLShape = () => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const createSquareShape = () => {
   return {
     size: 2,
@@ -108,7 +108,7 @@ export const createSquareShape = () => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const createSShape = () => {
   return {
     size: 3,
@@ -129,7 +129,7 @@ export const createSShape = () => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const createTShape = () => {
   return {
     size: 3,
@@ -160,7 +160,7 @@ export const createTShape = () => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const createZShape = () => {
   return {
     size: 3,
@@ -181,8 +181,9 @@ export const createZShape = () => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const getShapeByType = type => {
+  // TODO: I am not happy with switch statement
   switch (type) {
     case SHAPE_TYPES.SQUARE:
       return createSquareShape();
@@ -211,12 +212,12 @@ export const getRandomShape = () => {
   return getShapeByType(type);
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const getShapeOrientation = shape => {
   return shape.orientations[shape.rotation];
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const moveShape = (shape, vector) => {
   return {
     ...shape,
@@ -224,7 +225,7 @@ export const moveShape = (shape, vector) => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const rotateShape = shape => {
   return {
     ...shape,

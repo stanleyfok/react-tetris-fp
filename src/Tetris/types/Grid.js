@@ -1,7 +1,7 @@
 import { flow, curry } from "lodash/fp";
 import { getShapeOrientation } from "./Shape";
 
-// pure function 🌟
+// 🌟: pure function
 export const createGrid = (rows, cols) => {
   return {
     map: getEmptyMap(rows, cols),
@@ -10,17 +10,17 @@ export const createGrid = (rows, cols) => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 const getEmptyMap = (rows, cols) => {
-  // 🌟: create a 2d array with init value in 1 line
+  // 👍: create a 2d array with init value in 1 line
   return Array(rows).fill(new Array(cols).fill(false));
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const hasCollision = (shape, grid) => {
   const orientation = getShapeOrientation(shape);
 
-  // 🌟: using nested reduce to check collision
+  // 👍: using nested reduce to check collision
   return orientation.reduce(
     (hasCollisionInRow, row, i) =>
       row.reduce((hasCollisionInPixel, col, j) => {
@@ -55,12 +55,13 @@ export const hasCollision = (shape, grid) => {
   );
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const addShapeToGrid = (shape, grid) => {
   const orientation = getShapeOrientation(shape);
 
   return {
     ...grid,
+    // 👍: using nested map to calculate a new map
     map: grid.map.map((row, i) => {
       return row.map((col, j) => {
         const checkX = j - shape.position[0];
@@ -82,25 +83,24 @@ export const addShapeToGrid = (shape, grid) => {
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const clearFullRows = grid => {
   return {
     ...grid,
+    // 👍: method composition
     map: flow(
-      // filter rows that are full
       clearFullRowsFromGridMap,
-      // pad empty rows back after filter full rows
       curry(padRowsToGridMap)(grid.rows)(grid.cols)
     )(grid.map)
   };
 };
 
-// pure function 🌟
+// 🌟: pure function
 const clearFullRowsFromGridMap = map => {
   return map.filter(row => !row.reduce((acc, value) => (acc &= value), true));
 };
 
-// pure function 🌟
+// 🌟: pure function
 const padRowsToGridMap = (rows, cols, map) => {
   return [...getEmptyMap(rows - map.length, cols), ...map];
 };

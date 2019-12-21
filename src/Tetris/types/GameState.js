@@ -14,7 +14,7 @@ export const ACTION = {
   ROTATE: 3
 };
 
-// pure function 🌟
+// 🌟: pure function
 export const createGameState = (rows, cols) => {
   return {
     currentShape: getNextShape(cols),
@@ -30,20 +30,15 @@ const getNextShape = cols => {
   const shape = getRandomShape();
 
   shape.rotation = Math.floor(Math.random() * shape.orientations.length);
-  shape.position = getShapeInitialPosition(shape, cols);
+  shape.position = [
+    Math.floor((cols - shape.size) / 2), // middle of tower
+    -shape.size // top of tower
+  ];
 
   return shape;
 };
 
-// pure function 🌟
-const getShapeInitialPosition = (shape, cols) => {
-  return [
-    Math.floor((cols - shape.size) / 2), // middle of tower
-    -shape.size // top of tower
-  ];
-};
-
-// pure function 🌟
+// 🌟: pure function
 export const getNextGameState = (action, gameState) => {
   // TODO: I am not happy with these let variables
   let currentShape;
@@ -71,7 +66,7 @@ export const getNextGameState = (action, gameState) => {
 
   if (hasCollision(currentShape, gameState.unclearedGrid)) {
     if (action === ACTION.MOVE_DOWN) {
-      // 🌟: method composition
+      // 👍: method composition
       unclearedGrid = flow(
         curry(addShapeToGrid)(gameState.currentShape),
         clearFullRows
