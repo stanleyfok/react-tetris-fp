@@ -1,3 +1,4 @@
+import { flow, curry } from "lodash/fp";
 import { getShapeOrientation } from "./Shapes/Shape";
 
 // pure function 🌟
@@ -20,6 +21,7 @@ export const cloneGrid = grid => {
 
 // pure function 🌟
 const getEmptyMap = (rows, cols) => {
+  // 🌟: make a 2d array with init value in 1 line
   return new Array(rows).fill(new Array(cols).fill(false));
 };
 
@@ -96,16 +98,23 @@ export const addShapeToGrid = (shape, grid) => {
 export const clearFullRows = grid => {
   const newGrid = cloneGrid(grid);
 
-  // filter full rows
-  newGrid.map = newGrid.map.filter(
-    row => !row.reduce((acc, value) => (acc &= value), true)
-  );
-
-  // append empty rows back
-  newGrid.map = [
-    ...getEmptyMap(newGrid.rows - newGrid.map.length, newGrid.cols),
-    ...newGrid.map
-  ];
+  // 🌟: method composition
+  newGrid.map = flow(
+    // filter rows that are full
+    clearFullRowsFromGridMap,
+    // pad empty rows back after filter full rows
+    curry(padRowsToGridMap)(grid.rows)(grid.cols)
+  )(grid.map);
 
   return newGrid;
+};
+
+// pure function 🌟
+const clearFullRowsFromGridMap = map => {
+  return map.filter(row => !row.reduce((acc, value) => (acc &= value), true));
+};
+
+// pure function 🌟
+const padRowsToGridMap = (rows, cols, map) => {
+  return [...getEmptyMap(rows - map.length, cols), ...map];
 };

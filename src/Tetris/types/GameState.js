@@ -1,3 +1,4 @@
+import { flow, curry } from "lodash/fp";
 import { getRandomShape, cloneShape } from "./Shapes/ShapeFactory";
 import {
   createGrid,
@@ -85,13 +86,11 @@ export const getNextGameState = (action, gameState) => {
 
   if (isCollided) {
     if (action === ACTION.MOVE_DOWN) {
-      nextGameState.unclearedGrid = addShapeToGrid(
-        gameState.currentShape, // use old state's shape position
-        nextGameState.unclearedGrid
-      );
-
-      // clear full rows
-      nextGameState.unclearedGrid = clearFullRows(nextGameState.unclearedGrid);
+      // 🌟: method composition
+      nextGameState.unclearedGrid = flow(
+        curry(addShapeToGrid)(gameState.currentShape),
+        clearFullRows
+      )(nextGameState.unclearedGrid);
 
       // check if game over
       if (nextGameState.currentShape.position[1] < 0) {
