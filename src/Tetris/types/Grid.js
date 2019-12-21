@@ -20,43 +20,39 @@ const getEmptyMap = (rows, cols) => {
 export const hasCollision = (shape, grid) => {
   const orientation = getShapeOrientation(shape);
 
-  let isCollided = false;
-  // TODO: Not functional enoguh, isCollided is mutated
-  orientation.forEach((row, i) => {
-    row.forEach((_, j) => {
-      // only check if the pixel on the shape is filled
-      if (orientation[i][j] === 1) {
-        const actualX = shape.position[0] + j;
-        const actualY = shape.position[1] + i;
+  // 🌟: using nested reduce to check collision
+  return orientation.reduce(
+    (hasCollisionInRow, row, i) =>
+      row.reduce((hasCollisionInPixel, col, j) => {
+        if (col === 1) {
+          const actualX = shape.position[0] + j;
+          const actualY = shape.position[1] + i;
 
-        // ignore if still above the top
-        if (actualY < 0) {
-          return;
+          // ignore if still above the top
+          if (actualY < 0) {
+            return hasCollisionInPixel;
+          }
+
+          // check if hitting the bottom wall
+          if (actualY >= grid.rows) {
+            return true;
+          }
+
+          // check if hitting the left and right walls
+          if (actualX < 0 || actualX >= grid.cols) {
+            return true;
+          }
+
+          // check if hitting an unclear pixel
+          if (grid.map[actualY][actualX] === true) {
+            return true;
+          }
         }
 
-        // check if hitting the bottom wall
-        if (actualY >= grid.rows) {
-          isCollided = true;
-
-          return;
-        }
-
-        // check if hitting the left and right walls
-        if (actualX < 0 || actualX >= grid.cols) {
-          isCollided = true;
-
-          return;
-        }
-
-        // check if hitting an unclear pixel
-        if (grid.map[actualY][actualX] === true) {
-          isCollided = true;
-        }
-      }
-    });
-  });
-
-  return isCollided;
+        return hasCollisionInPixel;
+      }, hasCollisionInRow),
+    false
+  );
 };
 
 // pure function 🌟
