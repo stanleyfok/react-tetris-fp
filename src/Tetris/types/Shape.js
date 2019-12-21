@@ -203,14 +203,6 @@ export const getShapeByType = type => {
   }
 };
 
-// pure function 🌟
-export const cloneShape = shape => {
-  return {
-    ...shape,
-    position: [...shape.position]
-  };
-};
-
 // impure function due to randomness
 export const getRandomShape = () => {
   const totalShapes = Object.keys(SHAPE_TYPES).length;
@@ -222,4 +214,20 @@ export const getRandomShape = () => {
 // pure function 🌟
 export const getShapeOrientation = shape => {
   return shape.orientations[shape.rotation];
+};
+
+// pure function 🌟
+export const moveShape = (shape, vector) => {
+  return {
+    ...shape,
+    position: [shape.position[0] + vector[0], shape.position[1] + vector[1]]
+  };
+};
+
+// pure function 🌟
+export const rotateShape = shape => {
+  return {
+    ...shape,
+    rotation: (shape.rotation + 1) % shape.orientations.length
+  };
 };

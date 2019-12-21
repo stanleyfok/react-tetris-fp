@@ -1,8 +1,7 @@
-import { flow, curry } from "lodash/fp";
-import { getRandomShape, cloneShape } from "./Shape";
+import { flow, curry, cloneDeep } from "lodash/fp";
+import { getRandomShape, moveShape, rotateShape } from "./Shape";
 import {
   createGrid,
-  cloneGrid,
   hasCollision,
   addShapeToGrid,
   clearFullRows
@@ -22,16 +21,6 @@ export const createGameState = (rows, cols) => {
     unclearedGrid: createGrid(rows, cols),
     displayGrid: createGrid(rows, cols),
     isGameOver: false
-  };
-};
-
-// pure function 🌟
-export const cloneGameState = gameState => {
-  return {
-    ...gameState,
-    currentShape: cloneShape(gameState.currentShape),
-    unclearedGrid: cloneGrid(gameState.unclearedGrid),
-    displayGrid: cloneGrid(gameState.displayGrid)
   };
 };
 
@@ -56,59 +45,61 @@ const getShapeInitialPosition = (shape, cols) => {
 
 // pure function 🌟
 export const getNextGameState = (action, gameState) => {
-  const nextGameState = cloneGameState(gameState);
+  // TODO: I am not happy with these let variables
+  let currentShape;
+  let unclearedGrid;
+  let isGameOver = false;
 
+  // TODO: I am not happy with switch statement
   switch (action) {
     case ACTION.MOVE_DOWN:
-      nextGameState.currentShape.position[1] += 1;
+      currentShape = moveShape(gameState.currentShape, [0, 1]);
       break;
     case ACTION.MOVE_LEFT:
-      nextGameState.currentShape.position[0] -= 1;
+      currentShape = moveShape(gameState.currentShape, [-1, 0]);
       break;
     case ACTION.MOVE_RIGHT:
-      nextGameState.currentShape.position[0] += 1;
+      currentShape = moveShape(gameState.currentShape, [1, 0]);
       break;
     case ACTION.ROTATE:
-      nextGameState.currentShape.rotation =
-        (nextGameState.currentShape.rotation + 1) %
-        nextGameState.currentShape.orientations.length;
+      currentShape = rotateShape(gameState.currentShape);
       break;
     default:
+      currentShape = moveShape(gameState.currentShape, [0, 1]);
       break;
   }
 
-  const isCollided = hasCollision(
-    nextGameState.currentShape,
-    nextGameState.unclearedGrid
-  );
-
-  if (isCollided) {
+  if (hasCollision(currentShape, gameState.unclearedGrid)) {
     if (action === ACTION.MOVE_DOWN) {
       // 🌟: method composition
-      nextGameState.unclearedGrid = flow(
+      unclearedGrid = flow(
         curry(addShapeToGrid)(gameState.currentShape),
         clearFullRows
-      )(nextGameState.unclearedGrid);
+      )(gameState.unclearedGrid);
 
       // check if game over
-      if (nextGameState.currentShape.position[1] < 0) {
-        nextGameState.isGameOver = true;
+      if (currentShape.position[1] < 0) {
+        // TODO: I am not happy with isGame being reassigned
+        isGameOver = true;
+        currentShape = cloneDeep(gameState.currentShape);
       } else {
-        nextGameState.currentShape = getNextShape(
-          nextGameState.unclearedGrid.cols
-        );
+        currentShape = getNextShape(unclearedGrid.cols);
       }
     } else {
       // just cannot move the shape, so game state keeps unchanged
-      return gameState;
+      return cloneDeep(gameState);
     }
+  } else {
+    unclearedGrid = cloneDeep(gameState.unclearedGrid);
   }
 
   // calculate the grid for display by combining the shape and uncleared grid
-  nextGameState.displayGrid = addShapeToGrid(
-    nextGameState.currentShape,
-    nextGameState.unclearedGrid
-  );
+  const displayGrid = addShapeToGrid(currentShape, unclearedGrid);
 
-  return nextGameState;
+  return {
+    currentShape,
+    unclearedGrid,
+    displayGrid,
+    isGameOver
+  };
 };

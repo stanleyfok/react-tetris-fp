@@ -11,15 +11,6 @@ export const createGrid = (rows, cols) => {
 };
 
 // pure function 🌟
-export const cloneGrid = grid => {
-  return {
-    ...grid,
-    // 🌟: clone a 2d array in 1 line
-    map: grid.map.map(row => [...row])
-  };
-};
-
-// pure function 🌟
 const getEmptyMap = (rows, cols) => {
   // 🌟: create a 2d array with init value in 1 line
   return Array(rows).fill(new Array(cols).fill(false));
@@ -70,30 +61,29 @@ export const hasCollision = (shape, grid) => {
 
 // pure function 🌟
 export const addShapeToGrid = (shape, grid) => {
-  const newGrid = cloneGrid(grid);
-
   const orientation = getShapeOrientation(shape);
 
-  // TODO: Not functional enoguh, newGrid.map is mutated
-  orientation.forEach((row, i) => {
-    row.forEach((_, j) => {
-      if (orientation[i][j] === 1) {
-        const actualX = shape.position[0] + j;
-        const actualY = shape.position[1] + i;
+  return {
+    ...grid,
+    map: grid.map.map((row, i) => {
+      return row.map((col, j) => {
+        const checkX = j - shape.position[0];
+        const checkY = i - shape.position[1];
 
         if (
-          actualX >= 0 &&
-          actualX < newGrid.cols &&
-          actualY >= 0 &&
-          actualY < newGrid.rows
+          checkX >= 0 &&
+          checkX < shape.size &&
+          checkY >= 0 &&
+          checkY < shape.size &&
+          orientation[checkY][checkX] === 1
         ) {
-          newGrid.map[actualY][actualX] = true;
+          return true;
         }
-      }
-    });
-  });
 
-  return newGrid;
+        return col;
+      });
+    })
+  };
 };
 
 // pure function 🌟
