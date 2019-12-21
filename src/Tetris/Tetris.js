@@ -1,9 +1,8 @@
 import React from "react";
 import PropTypes from "prop-types";
 import Grid from "./components/Grid/Grid";
-import { addShapeToGrid } from "./types/Grid";
 
-import { ACTION, getNextGameState, getInitGameState } from "./types/GameState";
+import { ACTION, createGameState, getNextGameState } from "./types/GameState";
 
 class Tetris extends React.Component {
   constructor(props) {
@@ -46,14 +45,9 @@ class Tetris extends React.Component {
 
   startNewGame = () => {
     const { rows, cols, normalInterval } = this.props;
-    this.gameState = getInitGameState(rows, cols);
 
-    this.setState({
-      grid: addShapeToGrid(
-        this.gameState.currentShape,
-        this.gameState.unclearedGrid
-      )
-    });
+    this.gameState = createGameState(rows, cols);
+    this.setState(this.gameState);
 
     this.timer = setTimeout(this.doGameTick, normalInterval);
   };
@@ -80,54 +74,34 @@ class Tetris extends React.Component {
   moveShapeDown = () => {
     this.gameState = getNextGameState(ACTION.MOVE_DOWN, this.gameState);
 
-    this.setState({
-      grid: addShapeToGrid(
-        this.gameState.currentShape,
-        this.gameState.unclearedGrid
-      )
-    });
+    this.setState(this.gameState);
   };
 
   // impure function
   moveShapeLeft = () => {
     this.gameState = getNextGameState(ACTION.MOVE_LEFT, this.gameState);
 
-    this.setState({
-      grid: addShapeToGrid(
-        this.gameState.currentShape,
-        this.gameState.unclearedGrid
-      )
-    });
+    this.setState(this.gameState);
   };
 
   // impure function
   moveShapeRight = () => {
     this.gameState = getNextGameState(ACTION.MOVE_RIGHT, this.gameState);
 
-    this.setState({
-      grid: addShapeToGrid(
-        this.gameState.currentShape,
-        this.gameState.unclearedGrid
-      )
-    });
+    this.setState(this.gameState);
   };
 
   // impure function
   rotateShape = () => {
     this.gameState = getNextGameState(ACTION.ROTATE, this.gameState);
 
-    this.setState({
-      grid: addShapeToGrid(
-        this.gameState.currentShape,
-        this.gameState.unclearedGrid
-      )
-    });
+    this.setState(this.gameState);
   };
 
   render() {
-    const { grid } = this.state;
+    const { displayGrid } = this.state;
 
-    return <div>{grid && <Grid grid={grid} />}</div>;
+    return <div>{displayGrid && <Grid grid={displayGrid} />}</div>;
   }
 }
 

@@ -17,8 +17,8 @@ const SHAPE_TYPES = {
 };
 
 // pure function 🌟
-export const getShape = shape => {
-  switch (shape) {
+export const getShapeByType = type => {
+  switch (type) {
     case SHAPE_TYPES.SQUARE:
       return new SquareShape();
     case SHAPE_TYPES.T:
@@ -79,7 +79,7 @@ export const cloneShape = shape => {
 // impure function due to randomness
 export const getRandomShape = () => {
   const totalShapes = Object.keys(SHAPE_TYPES).length;
-  const shape = Math.floor(Math.random() * totalShapes);
+  const type = Math.floor(Math.random() * totalShapes);
 
-  return getShape(shape);
+  return getShapeByType(type);
 };

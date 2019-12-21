@@ -1,22 +1,24 @@
 import { getShapeOrientation } from "./Shapes/Shape";
 
-export default class Grid {
-  constructor(rows, cols) {
-    this.map = getEmptyMap(rows, cols);
-    this.rows = rows;
-    this.cols = cols;
-  }
-}
+// pure function 🌟
+export const createGrid = (rows, cols) => {
+  return {
+    map: getEmptyMap(rows, cols),
+    rows,
+    cols
+  };
+};
 
 // pure function 🌟
 export const cloneGrid = grid => {
-  const newGrid = new Grid(grid.rows, grid.cols);
+  const newGrid = createGrid(grid.rows, grid.cols);
 
   newGrid.map = grid.map.map(row => [...row]);
 
   return newGrid;
 };
 
+// pure function 🌟
 const getEmptyMap = (rows, cols) => {
   return new Array(rows).fill(new Array(cols).fill(false));
 };
@@ -66,6 +68,7 @@ export const hasCollision = (shape, grid) => {
 // pure function 🌟
 export const addShapeToGrid = (shape, grid) => {
   const newGrid = cloneGrid(grid);
+
   const orientation = getShapeOrientation(shape);
 
   orientation.forEach((row, i) => {

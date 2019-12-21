@@ -1,11 +1,11 @@
 import { getRandomShape, cloneShape } from "./Shapes/ShapeFactory";
-import Grid, {
+import {
+  createGrid,
   cloneGrid,
   hasCollision,
   addShapeToGrid,
   clearFullRows
 } from "./Grid";
-import { getShapeOrientation } from "./Shapes/Shape";
 
 export const ACTION = {
   MOVE_DOWN: 0,
@@ -14,49 +14,43 @@ export const ACTION = {
   ROTATE: 3
 };
 
-export default class GameState {
-  constructor(rows, cols) {
-    this.currentShape = null;
-    this.unclearedGrid = new Grid(rows, cols);
-    this.isGameOver = false;
-  }
-}
+// pure function 🌟
+export const createGameState = (rows, cols) => {
+  return {
+    currentShape: getNextShape(cols),
+    unclearedGrid: createGrid(rows, cols),
+    displayGrid: createGrid(rows, cols),
+    isGameOver: false
+  };
+};
 
 // pure function 🌟
 export const cloneGameState = gameState => {
-  const newGameState = new GameState();
+  const newGameState = createGameState(gameState.rows, gameState.cols);
 
   newGameState.currentShape = cloneShape(gameState.currentShape);
   newGameState.unclearedGrid = cloneGrid(gameState.unclearedGrid);
+  newGameState.displayGrid = cloneGrid(gameState.displayGrid);
   newGameState.isGameOver = gameState.isGameOver;
 
   return newGameState;
 };
 
 // impure function due to randomness
-export const getInitGameState = (rows, cols) => {
-  const gameState = new GameState(rows, cols);
-
-  gameState.currentShape = getNextShape(gameState.unclearedGrid);
-
-  return gameState;
-};
-
-// impure function due to randomness
 // since generating next shape is by random, it is not predictive
-const getNextShape = Grid => {
+const getNextShape = cols => {
   const shape = getRandomShape();
 
   shape.rotation = Math.floor(Math.random() * shape.orientations.length);
-  shape.position = getShapeInitialPosition(shape, Grid);
+  shape.position = getShapeInitialPosition(shape, cols);
 
   return shape;
 };
 
-// pure function
-const getShapeInitialPosition = (shape, Grid) => {
+// pure function 🌟
+const getShapeInitialPosition = (shape, cols) => {
   return [
-    Math.floor((Grid.cols - shape.size) / 2), // middle of tower
+    Math.floor((cols - shape.size) / 2), // middle of tower
     -shape.size // top of tower
   ];
 };
@@ -103,13 +97,21 @@ export const getNextGameState = (action, gameState) => {
       if (nextGameState.currentShape.position[1] < 0) {
         nextGameState.isGameOver = true;
       } else {
-        nextGameState.currentShape = getNextShape(nextGameState.unclearedGrid);
+        nextGameState.currentShape = getNextShape(
+          nextGameState.unclearedGrid.cols
+        );
       }
     } else {
       // just cannot move the shape, so game state keeps unchanged
       return gameState;
     }
   }
+
+  // calculate the grid for display by combining the shape and uncleared grid
+  nextGameState.displayGrid = addShapeToGrid(
+    nextGameState.currentShape,
+    nextGameState.unclearedGrid
+  );
 
   return nextGameState;
 };
