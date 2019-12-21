@@ -1,5 +1,5 @@
 import { flow, curry } from "lodash/fp";
-import { getShapeOrientation } from "./Shapes/Shape";
+import { getShapeOrientation } from "./Shape";
 
 // pure function 🌟
 export const createGrid = (rows, cols) => {
@@ -98,18 +98,15 @@ export const addShapeToGrid = (shape, grid) => {
 
 // pure function 🌟
 export const clearFullRows = grid => {
-  const newGrid = cloneGrid(grid);
-
-  // TODO: Not functional enoguh, newGrid.map is mutated
-  // 🌟: method composition
-  newGrid.map = flow(
-    // filter rows that are full
-    clearFullRowsFromGridMap,
-    // pad empty rows back after filter full rows
-    curry(padRowsToGridMap)(grid.rows)(grid.cols)
-  )(grid.map);
-
-  return newGrid;
+  return {
+    ...grid,
+    map: flow(
+      // filter rows that are full
+      clearFullRowsFromGridMap,
+      // pad empty rows back after filter full rows
+      curry(padRowsToGridMap)(grid.rows)(grid.cols)
+    )(grid.map)
+  };
 };
 
 // pure function 🌟

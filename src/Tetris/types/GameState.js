@@ -1,5 +1,5 @@
 import { flow, curry } from "lodash/fp";
-import { getRandomShape, cloneShape } from "./Shapes/ShapeFactory";
+import { getRandomShape, cloneShape } from "./Shape";
 import {
   createGrid,
   cloneGrid,
