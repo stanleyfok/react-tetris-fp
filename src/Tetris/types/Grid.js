@@ -12,17 +12,17 @@ export const createGrid = (rows, cols) => {
 
 // pure function 🌟
 export const cloneGrid = grid => {
-  const newGrid = createGrid(grid.rows, grid.cols);
-
-  newGrid.map = grid.map.map(row => [...row]);
-
-  return newGrid;
+  return {
+    ...grid,
+    // 🌟: clone a 2d array in 1 line
+    map: grid.map.map(row => [...row])
+  };
 };
 
 // pure function 🌟
 const getEmptyMap = (rows, cols) => {
-  // 🌟: make a 2d array with init value in 1 line
-  return new Array(rows).fill(new Array(cols).fill(false));
+  // 🌟: create a 2d array with init value in 1 line
+  return Array(rows).fill(new Array(cols).fill(false));
 };
 
 // pure function 🌟
@@ -30,6 +30,7 @@ export const hasCollision = (shape, grid) => {
   const orientation = getShapeOrientation(shape);
 
   let isCollided = false;
+  // TODO: Not functional enoguh, isCollided is mutated
   orientation.forEach((row, i) => {
     row.forEach((_, j) => {
       // only check if the pixel on the shape is filled
@@ -73,6 +74,7 @@ export const addShapeToGrid = (shape, grid) => {
 
   const orientation = getShapeOrientation(shape);
 
+  // TODO: Not functional enoguh, newGrid.map is mutated
   orientation.forEach((row, i) => {
     row.forEach((_, j) => {
       if (orientation[i][j] === 1) {
@@ -98,6 +100,7 @@ export const addShapeToGrid = (shape, grid) => {
 export const clearFullRows = grid => {
   const newGrid = cloneGrid(grid);
 
+  // TODO: Not functional enoguh, newGrid.map is mutated
   // 🌟: method composition
   newGrid.map = flow(
     // filter rows that are full

@@ -27,14 +27,12 @@ export const createGameState = (rows, cols) => {
 
 // pure function 🌟
 export const cloneGameState = gameState => {
-  const newGameState = createGameState(gameState.rows, gameState.cols);
-
-  newGameState.currentShape = cloneShape(gameState.currentShape);
-  newGameState.unclearedGrid = cloneGrid(gameState.unclearedGrid);
-  newGameState.displayGrid = cloneGrid(gameState.displayGrid);
-  newGameState.isGameOver = gameState.isGameOver;
-
-  return newGameState;
+  return {
+    ...gameState,
+    currentShape: cloneShape(gameState.currentShape),
+    unclearedGrid: cloneGrid(gameState.unclearedGrid),
+    displayGrid: cloneGrid(gameState.displayGrid)
+  };
 };
 
 // impure function due to randomness
