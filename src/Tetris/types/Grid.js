@@ -23,6 +23,7 @@ export const hasCollision = (shape, grid) => {
   // 👍: using nested reduce to check collision
   return orientation.reduce(
     (hasCollisionInRow, row, i) =>
+      hasCollisionInRow |
       row.reduce((hasCollisionInPixel, col, j) => {
         if (col === 1) {
           const actualX = shape.position[0] + j;
